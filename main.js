@@ -1,11 +1,12 @@
-function playSound(audioSelector) {
-  const element = document.querySelector(audioSelector);
+function validateAudioElement(audioSelector) {
+  const audioElement = document.querySelector(audioSelector);
 
-  if (element && element.localName === "audio") {
-    element.play();
-  } else {
+  if (!audioElement || audioElement.localName !== "audio") {
     console.log("Elemento não encontrado ou seletor inválido");
+    return;
   }
+
+  playSound(audioElement);
 }
 
 const keyList = document.querySelectorAll(".key");
@@ -16,15 +17,26 @@ for (let count = 0; count < keyList.length; count++) {
   const audioId = `#sound_${instrument}`;
 
   key.onclick = function () {
-    playSound(audioId);
+    validateAudioElement(audioId);
   };
 
+  addActiveClassByOnkeydown(key);
+  removeActiveClassByOnkeyup(key);
+}
+
+function playSound(audioElement) {
+  audioElement.play();
+}
+
+function addActiveClassByOnkeydown(key) {
   key.onkeydown = function (event) {
     if (event.code === "Space" || event.code === "Enter") {
       key.classList.add("active");
     }
   };
+}
 
+function removeActiveClassByOnkeyup(key) {
   key.onkeyup = function (event) {
     if (event.code === "Space" || event.code === "Enter") {
       key.classList.remove("active");
